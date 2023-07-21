@@ -121,10 +121,15 @@ int main(int argc, char** argv) {
                 .package(buffer.data(), buffer.size())
                 .build(*engine);
         auto materialInstance = material->createInstance();
-        materialInstance->setParameter("baseColor", float4(0.8, 0.8, 0.8, 1));
-        materialInstance->setParameter("roughness", float(0.5));
         materialInstance->setParameter("metallic", float(0.0));
-        materialInstance->setParameter("reflectance", float(1.0));
+        materialInstance->setParameter("baseColor", float4(0.8, 0.8, 0.8, 1));
+
+        // materialInstance->setParameter("roughness", float(0.0));
+        // materialInstance->setParameter("reflectance", float(1.0));
+
+        // materialInstance->setParameter("clearCoat", float(1.0));
+        // materialInstance->setParameter("clearCoatRoughness", float(0.0));
+
 
         for (auto renderable : app.meshes->getRenderables()) {
             auto instance = rcm.getInstance(renderable);

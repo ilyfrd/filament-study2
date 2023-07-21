@@ -230,8 +230,10 @@ static void setup(Engine* engine, View*, Scene* scene) {
 
     auto& tcm = engine->getTransformManager();
     auto ei = tcm.getInstance(g_meshSet->getRenderables()[0]);
-    tcm.setTransform(ei, mat4f{ mat3f(g_config.scale), float3(0.0f, 0.0f, -4.0f) } *
-            tcm.getWorldTransform(ei));
+    // tcm.setTransform(ei, mat4f{ mat3f(g_config.scale), float3(0.0f, 0.0f, -4.0f) } *
+    //         tcm.getWorldTransform(ei));
+
+    tcm.setTransform(ei, mat4f{ mat3f(0.01), float3(0.0f, 0.0f, 0.0f) });
 
     size_t count = 0;
     auto& rcm = engine->getRenderableManager();
@@ -943,7 +945,7 @@ static void gui(filament::Engine* engine, filament::View*) {
     auto lightInstance = lcm.getInstance(params.light);
     lcm.setColor(lightInstance, params.lightColor);
     lcm.setIntensity(lightInstance, params.lightIntensity);
-    lcm.setDirection(lightInstance, params.lightDirection);
+    // lcm.setDirection(lightInstance, params.lightDirection);
     lcm.setSunAngularRadius(lightInstance, params.sunAngularRadius);
     lcm.setSunHaloSize(lightInstance, params.sunHaloSize);
     lcm.setSunHaloFalloff(lightInstance, params.sunHaloFalloff);
@@ -1058,6 +1060,16 @@ int main(int argc, char* argv[]) {
 
     g_config.title = "Material Sandbox";
     FilamentApp& filamentApp = FilamentApp::get();
+
+    FilamentApp::get().animate([](Engine* engine, View* view, double now) {
+
+        extern filament::Camera* filamentAppMainCamera;
+        auto cameraPosition = filamentAppMainCamera->getPosition();
+        auto& lcm = engine->getLightManager();
+        lcm.setDirection(lcm.getInstance(g_params.light), { -cameraPosition.x, -cameraPosition.y, -cameraPosition.z });
+
+    });
+
     filamentApp.run(g_config, setup, cleanup, gui, preRender);
     return 0;
 }
